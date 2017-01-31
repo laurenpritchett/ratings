@@ -1,11 +1,7 @@
 """Utility file to seed ratings database from MovieLens data in seed_data/"""
 
 from sqlalchemy import func
-from model import User
-from model import Rating
-from model import Movie
-
-from model import connect_to_db, db
+from model import User, Rating, Movie, connect_to_db, db
 from server import app
 
 from datetime import datetime
@@ -43,14 +39,20 @@ def load_movies():
 
     Movie.query.delete()
 
-    for row in open("seed_data/u.item"):
+    for i, row in enumerate(open("seed_data/u.item")):
         row = row.rstrip()
+
         movie_id, title, released_str, _, imdb_url = row.split("|")[:5]
+
+        # Convert date string to datetime object.
+        # The date in the file is Day-Month-Year.
 
         if released_str:
             released_at = datetime.strptime(released_str, "%d-%b-%Y")
         else:
             released_at = None
+
+        # Remove the year (ie "(2005)") from the end of the title.
 
         title = title.split("(")[0]
 
@@ -60,6 +62,10 @@ def load_movies():
                       imdb_url=imdb_url)
 
         db.session.add(movie)
+
+        # Inform the user of progress.
+        if i % 100 == 0:
+            print i
 
     db.session.commit()
 
@@ -75,7 +81,7 @@ def load_ratings():
 
     Rating.query.delete()
 
-    for row in open("seed_data/u.data"):
+    for i, row in enumerate(open("seed_data/u.data")):
         row = row.rstrip()
         user_id, movie_id, score = row.split("\t")[:3]
 
@@ -85,6 +91,14 @@ def load_ratings():
                         )
 
         db.session.add(rating)
+
+        if i % 1000 == 0:
+            print i
+
+            # Commit every 1000 rows to increase performance
+            # and prevent thrashing.
+
+            db.session.commit()
 
     db.session.commit()
 
