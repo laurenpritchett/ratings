@@ -76,9 +76,26 @@ def handle_user_login():
 @app.route('/user-logout')
 def logout():
     """ """
+
     session.pop['user_id']
     flash('Goodbye mate!')
     return redirect("/")
+
+@app.route('/user/<user_id>')
+def user_page(user_id):
+    """ Show user profile."""
+
+
+    user = User.query.filter(User.user_id == user_id).one()
+
+    # START HERE 
+    # Change the next line to leverage relationships
+    # 
+
+    ratings = Rating.query.filter(Rating.user_id == user_id).all()
+
+    return render_template("user-profile.html", user_id)
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
