@@ -98,6 +98,17 @@ def user_page(user_id):
                            title_and_score=title_and_score,
                            )
 
+@app.route('/movies')
+def show_movies():
+    """Show movies in database."""
+
+    movies = Movie.query.all()
+    titles = [movie.title for movie in movies]
+
+    return render_template("movies.html", titles=titles)
+
+
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
