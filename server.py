@@ -68,9 +68,6 @@ def handle_user_login():
     else:
         flash('Incorrect email or password provided.')
 
-    # test the email against the db
-    # except:
-
     return redirect("/")
 
 
@@ -90,7 +87,11 @@ def user_page(user_id):
     current_user = User.query.filter(User.user_id == user_id).one()
 
     title_and_score = db.session.query(Movie.title,
-                                       Rating.score).join(Rating).filter(Rating.user_id == user_id).all()
+                                       Rating.score).\
+        join(Rating).\
+        filter(Rating.user_id == user_id).\
+        all()
+
 
     return render_template("user-profile.html",
                            current_user=current_user,
