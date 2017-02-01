@@ -27,14 +27,38 @@ def index():
 
     return render_template("homepage.html")
 
+
 @app.route('/users')
 def user_list():
     """Show list of users."""
 
-    users = Users.query.all()
+    users = User.query.all()
     return render_template("user_list.html", users=users)
 
 
+@app.route('/user-login')
+def user_login():
+    """ """
+
+    return render_template("user-login.html")
+
+
+@app.route('/user-login', methods=["POST"])
+def handle_user_login():
+    """ """
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    new_user = User(email=email, password=password)
+    db.session.add(new_user)
+    db.session.commit()
+    # test the email against the db
+    # try:
+    #     User.query.filter(User.email == email).one()
+    # except:
+    
+    return redirect("/")
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
