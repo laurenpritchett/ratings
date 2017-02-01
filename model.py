@@ -66,7 +66,7 @@ class Rating(db.Model):
     # DTR with movie
     movie = db.relationship("Movie",
                             backref=db.backref("ratings",
-                                               order_by=rating_id))
+                                             order_by=rating_id))
 
     def __repr__(self):
         """Provide helpful representation when printed."""

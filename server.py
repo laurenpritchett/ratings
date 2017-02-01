@@ -73,6 +73,7 @@ def handle_user_login():
 
     return redirect("/")
 
+
 @app.route('/user-logout')
 def logout():
     """ """
@@ -81,20 +82,20 @@ def logout():
     flash('Goodbye mate!')
     return redirect("/")
 
+
 @app.route('/user/<user_id>')
 def user_page(user_id):
     """ Show user profile."""
 
+    current_user = User.query.filter(User.user_id == user_id).one()
 
-    user = User.query.filter(User.user_id == user_id).one()
+    title_and_score = db.session.query(Movie.title,
+                                       Rating.score).join(Rating).filter(Rating.user_id == user_id).all()
 
-    # START HERE 
-    # Change the next line to leverage relationships
-    # 
-
-    ratings = Rating.query.filter(Rating.user_id == user_id).all()
-
-    return render_template("user-profile.html", user_id)
+    return render_template("user-profile.html",
+                           current_user=current_user,
+                           title_and_score=title_and_score,
+                           )
 
 
 if __name__ == "__main__":
