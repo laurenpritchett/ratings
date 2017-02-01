@@ -9,6 +9,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import User, Rating, Movie, connect_to_db, db
 
+from sqlalchemy.orm.exc import NoResultFound
+
 
 app = Flask(__name__)
 
@@ -50,14 +52,32 @@ def handle_user_login():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    new_user = User(email=email, password=password)
-    db.session.add(new_user)
-    db.session.commit()
+    try:
+        current_user = User.query.filter(User.email == email).one()
+    except NoResultFound:
+        new_user = User(email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Welcome stranger!')
+        return redirect("/")
+
+    if current_user.password == password:
+        session['user_id'] = current_user.user_id
+        flash('Welcome back!')
+        return redirect("/")
+    else:
+        flash('Incorrect email or password provided.')
+
     # test the email against the db
-    # try:
-    #     User.query.filter(User.email == email).one()
     # except:
-    
+
+    return redirect("/")
+
+@app.route('/user-logout')
+def logout():
+    """ """
+    session.pop['user_id']
+    flash('Goodbye mate!')
     return redirect("/")
 
 if __name__ == "__main__":

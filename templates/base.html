@@ -7,8 +7,14 @@
 <body>
   Ratings
   <hr>
+  {% for message in get_flashed_messages() %}
+    {{ message }}
+  {% endfor %}
+
+  <button id="logout-button">Logout</button>
 
   {% block content %} Put your content here {% endblock %}
-  
+
+
 </body>
 </html>
