@@ -3,6 +3,13 @@
 
 <h1>{{ title }}</h1>
 
+{% if session['user_id'] and user_score %}
+<section>
+  <h3>Your rating:</h3>
+  <p>{{ user_score }}</p>
+</section>
+{% endif %}
+
 <section>
   <h3>Movie Ratings:</h3>
   <ul>

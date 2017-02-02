@@ -112,13 +112,23 @@ def show_movies():
 def show_movie_details(movie_id):
     """Show movie details."""
 
-    ratings = Rating.query.filter(Rating.movie_id == movie_id).all()
+    user_id = session['user_id']
+    ratings_query = Rating.query.filter(Rating.movie_id == movie_id)
+    ratings = ratings_query.all()
+    user_rating = ratings_query.filter(Rating.user_id == user_id).all()
+    user_rating_obj = user_rating[0]
+    user_score = user_rating_obj.score
+
     scores = [rating.score for rating in ratings]
     title = ratings[0].movie.title
+
+    print "user_id:", user_id
+    print "user_rating:", user_rating
 
     return render_template('movie-details.html',
                            scores=scores,
                            title=title,
+                           user_score=user_score,
                            )
 
 
@@ -127,7 +137,6 @@ def check_status():
     """Check if user is logged in"""
 
     user_id = request.args.get('user_id')
-    print user_id, "!!!!!!!!!!!!!!!!!"
 
     if user_id is None:
         user_id = ""
@@ -139,7 +148,7 @@ def check_status():
 def rate_movie():
     """Provide new rating or change rating."""
 
-    pass
+    rating = request.form.get('rating')
 
 
 if __name__ == "__main__":
