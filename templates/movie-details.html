@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>{{ title }}</h1>
+
+<section>
+  <h3>Movie Ratings:</h3>
+  <ul>
+    {% for score in scores %}
+    <li>{{ score }} </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section>
+  <h2>Rate Movie</h2>
+
+  <form id='rating-form' action='/rate_movie' method='POST'>
+    Rating:<br>
+    <input type='radio' id='rating' name='rating' value='1'>1<br>
+    <input type='radio' id='rating' name='rating' value='2'>2<br>
+    <input type='radio' id='rating' name='rating' value='3'>3<br>
+    <input type='radio' id='rating' name='rating' value='4'>4<br>
+    <input type='radio' id='rating' name='rating' value='5'>5<br>
+    <input type='submit'>
+  </form>
+</section>
+
+<script>
+  
+  function submitRating (evt) {
+    evt.preventDefault();
+
+    var userRating = {
+      'rating': $("#rating").val()
+    }
+
+    $.post("")
+  }
+
+  $('#rating-form').on("submit", submitRating);
+</script>
+
+{% endblock %}

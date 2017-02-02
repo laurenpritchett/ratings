@@ -92,22 +92,54 @@ def user_page(user_id):
         filter(Rating.user_id == user_id).\
         all()
 
-
     return render_template("user-profile.html",
                            current_user=current_user,
                            title_and_score=title_and_score,
                            )
+
 
 @app.route('/movies')
 def show_movies():
     """Show movies in database."""
 
     movies = Movie.query.all()
-    titles = [movie.title for movie in movies]
+    titles = sorted([(movie.title, movie.movie_id) for movie in movies])
 
     return render_template("movies.html", titles=titles)
 
 
+@app.route('/movies/<movie_id>')
+def show_movie_details(movie_id):
+    """Show movie details."""
+
+    ratings = Rating.query.filter(Rating.movie_id == movie_id).all()
+    scores = [rating.score for rating in ratings]
+    title = ratings[0].movie.title
+
+    return render_template('movie-details.html',
+                           scores=scores,
+                           title=title,
+                           )
+
+
+@app.route('/check-status')
+def check_status():
+    """Check if user is logged in"""
+
+    user_id = request.args.get('user_id')
+    print user_id, "!!!!!!!!!!!!!!!!!"
+
+    if user_id is None:
+        user_id = ""
+
+    return user_id
+
+
+@app.route('/rate_movie', methods=['POST'])
+def rate_movie():
+    """Provide new rating or change rating."""
+
+    pass
 
 
 if __name__ == "__main__":

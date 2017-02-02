@@ -3,6 +3,7 @@
 <html>
 <head>
   <title>Ratings</title>
+  <script src="https://code.jquery.com/jquery.js"></script>
 </head>
 <body>
   Ratings
@@ -11,7 +12,11 @@
     {{ message }}
   {% endfor %}
 
-  <button id="logout-button">Logout</button>
+  {% if session['user_id'] %}
+    <button id="logout-button"><a href="/user-logout">Logout</a></button>
+  {% else %}
+    <button id="login-button"><a href="/user-login">Login</a></button>
+  {% endif %}
 
   {% block content %} Put your content here {% endblock %}
 
