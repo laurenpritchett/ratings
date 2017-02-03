@@ -3,12 +3,10 @@
 
 <h1>{{ title }}</h1>
 
-{% if 'user_id' in session and user_score %}
-<section>
+<section class="{{ class_name }}" id="your-rating">
   <h3>Your rating:</h3>
-  <p>{{ user_score }}</p>
+  <p id="user-score">{{ user_score }}</p>
 </section>
-{% endif %}
 
 <section>
   <h3>Movie Ratings:</h3>
@@ -22,14 +20,14 @@
 <section>
   {% if 'user_id' in session %}
     {% if user_score %}
-      <h2>Change your mind? Change your rating!</h2>
+      <h2 id="rerate">Change your mind? Change your rating!</h2>
     {% else %}
-      <h2>Rate Movie</h2>
+      <h2 id="initial-rating">Rate Movie</h2>
     {% endif %}
 
-    <form id='rating-form' action='/rate_movie' method='POST'>
+    <form id='rating-form' action='/rate-movie' method='POST'>
       Rating:<br>
-      <input type="hidden" name="title" value="{{ title }}">
+      <input type="hidden" name="title" id="title" value="{{ title }}">
       <input type='radio' id='rating' name='rating' value='1'>1<br>
       <input type='radio' id='rating' name='rating' value='2'>2<br>
       <input type='radio' id='rating' name='rating' value='3'>3<br>
@@ -43,15 +41,21 @@
 </section>
 
 <script>
+  function updateMovieDetails(){
+    $("#initial-rating").html('Change your mind? Change your rating!');
+    $(".hidden").attr("class", "visible");
+
+  }
   
   function submitRating (evt) {
     evt.preventDefault();
 
     var userRating = {
       'rating': $("#rating").val()
+      'title': $("#title").val()
     }
 
-    $.post("")
+    $.post("/rate-movie", userRating, updateMovieDetails)
   }
 
   $('#rating-form').on("submit", submitRating);

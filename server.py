@@ -115,9 +115,15 @@ def show_movie_details(movie_id):
     user_id = session.get('user_id')
     ratings_query = Rating.query.filter(Rating.movie_id == movie_id)
     ratings = ratings_query.all()
+    class_name = "hidden"
+
     if user_id is not None:
         user_rating = ratings_query.filter(Rating.user_id == user_id).all()
-        user_score = user_rating[0].score
+        if user_rating == []:
+            user_score = ""
+        else:
+            user_score = user_rating[0].score
+            class_name = "visible"
     else:
         user_score = ""
 
@@ -128,6 +134,7 @@ def show_movie_details(movie_id):
                            scores=scores,
                            title=title,
                            user_score=user_score,
+                           class_name=class_name
                            )
 
 
@@ -143,25 +150,27 @@ def check_status():
     return user_id
 
 
-@app.route('/rate_movie', methods=['POST'])
+@app.route('/rate-movie', methods=['POST'])
 def rate_movie():
     """Provide new rating or change rating."""
 
     rating = request.form.get('rating')
     title = request.form.get('title')
     user_id = session['user_id']
-    current_rating = Rating.query.filter((Rating.title == title)
-                                          & (Rating.user_id == user_id)).all()
+    movie = Movie.query.filter(Movie.title == title).all()
+    movie_id = movie[0].movie_id
+    print "movie_id", movie_id
+    current_rating = Rating.query.filter((Rating.movie_id == movie_id) & (Rating.user_id == user_id)).all()
 
-    movie_id = Movie.query.filter(Movie.title == title).all()
 
     if current_rating == []:
         new_rating = Rating(user_id=user_id,
                             movie_id=movie_id,
                             score=rating)
         db.session.add(new_rating)
-    
 
+    else:
+        current_rating[0].score = rating
 
     db.session.commit()
 
