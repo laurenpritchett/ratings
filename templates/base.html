@@ -12,7 +12,7 @@
     {{ message }}
   {% endfor %}
 
-  {% if session['user_id'] %}
+  {% if 'user_id' in session %}
     <button id="logout-button"><a href="/user-logout">Logout</a></button>
   {% else %}
     <button id="login-button"><a href="/user-login">Login</a></button>

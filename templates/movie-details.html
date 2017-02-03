@@ -3,7 +3,7 @@
 
 <h1>{{ title }}</h1>
 
-{% if session['user_id'] and user_score %}
+{% if 'user_id' in session and user_score %}
 <section>
   <h3>Your rating:</h3>
   <p>{{ user_score }}</p>
@@ -20,17 +20,26 @@
 </section>
 
 <section>
-  <h2>Rate Movie</h2>
+  {% if 'user_id' in session %}
+    {% if user_score %}
+      <h2>Change your mind? Change your rating!</h2>
+    {% else %}
+      <h2>Rate Movie</h2>
+    {% endif %}
 
-  <form id='rating-form' action='/rate_movie' method='POST'>
-    Rating:<br>
-    <input type='radio' id='rating' name='rating' value='1'>1<br>
-    <input type='radio' id='rating' name='rating' value='2'>2<br>
-    <input type='radio' id='rating' name='rating' value='3'>3<br>
-    <input type='radio' id='rating' name='rating' value='4'>4<br>
-    <input type='radio' id='rating' name='rating' value='5'>5<br>
-    <input type='submit'>
-  </form>
+    <form id='rating-form' action='/rate_movie' method='POST'>
+      Rating:<br>
+      <input type="hidden" name="title" value="{{ title }}">
+      <input type='radio' id='rating' name='rating' value='1'>1<br>
+      <input type='radio' id='rating' name='rating' value='2'>2<br>
+      <input type='radio' id='rating' name='rating' value='3'>3<br>
+      <input type='radio' id='rating' name='rating' value='4'>4<br>
+      <input type='radio' id='rating' name='rating' value='5'>5<br>
+      <input type='submit'>
+    </form>
+  {% else %}
+  <h3> <a href="/user-login">Login</a> to rate the movie!</h3>
+  {% endif %}
 </section>
 
 <script>

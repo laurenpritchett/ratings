@@ -112,18 +112,17 @@ def show_movies():
 def show_movie_details(movie_id):
     """Show movie details."""
 
-    user_id = session['user_id']
+    user_id = session.get('user_id')
     ratings_query = Rating.query.filter(Rating.movie_id == movie_id)
     ratings = ratings_query.all()
-    user_rating = ratings_query.filter(Rating.user_id == user_id).all()
-    user_rating_obj = user_rating[0]
-    user_score = user_rating_obj.score
+    if user_id is not None:
+        user_rating = ratings_query.filter(Rating.user_id == user_id).all()
+        user_score = user_rating[0].score
+    else:
+        user_score = ""
 
     scores = [rating.score for rating in ratings]
     title = ratings[0].movie.title
-
-    print "user_id:", user_id
-    print "user_rating:", user_rating
 
     return render_template('movie-details.html',
                            scores=scores,
@@ -149,6 +148,22 @@ def rate_movie():
     """Provide new rating or change rating."""
 
     rating = request.form.get('rating')
+    title = request.form.get('title')
+    user_id = session['user_id']
+    current_rating = Rating.query.filter((Rating.title == title)
+                                          & (Rating.user_id == user_id)).all()
+
+    movie_id = Movie.query.filter(Movie.title == title).all()
+
+    if current_rating == []:
+        new_rating = Rating(user_id=user_id,
+                            movie_id=movie_id,
+                            score=rating)
+        db.session.add(new_rating)
+    
+
+
+    db.session.commit()
 
 
 if __name__ == "__main__":
