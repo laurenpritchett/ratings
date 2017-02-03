@@ -4,7 +4,7 @@
 <h1>{{ title }}</h1>
 
 <section class="{{ class_name }}" id="your-rating">
-  <h3>Your rating:</h3>
+  <h3 class="{{ class_name }}">Your rating:</h3>
   <p id="user-score">{{ user_score }}</p>
 </section>
 
@@ -41,7 +41,8 @@
 </section>
 
 <script>
-  function updateMovieDetails(){
+  function updateMovieDetails(result){
+    alert(result);
     $("#initial-rating").html('Change your mind? Change your rating!');
     $(".hidden").attr("class", "visible");
 
@@ -51,11 +52,11 @@
     evt.preventDefault();
 
     var userRating = {
-      'rating': $("#rating").val()
+      'rating': $("#rating").val(),
       'title': $("#title").val()
     }
 
-    $.post("/rate-movie", userRating, updateMovieDetails)
+    $.post("/rate-movie", userRating, updateMovieDetails);
   }
 
   $('#rating-form').on("submit", submitRating);

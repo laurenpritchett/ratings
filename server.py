@@ -47,11 +47,12 @@ def user_login():
 
 @app.route('/user-login', methods=["POST"])
 def handle_user_login():
-    """ """
+    """Handles login and registration for new users."""
 
     email = request.form.get("email")
     password = request.form.get("password")
 
+    # Check if user is in the database. If not, create a new user.
     try:
         current_user = User.query.filter(User.email == email).one()
     except NoResultFound:
@@ -61,6 +62,7 @@ def handle_user_login():
         flash('Welcome stranger!')
         return redirect("/")
 
+    # Verify that user has entered the correct password.
     if current_user.password == password:
         session['user_id'] = current_user.user_id
         flash('Welcome back!')
@@ -73,9 +75,9 @@ def handle_user_login():
 
 @app.route('/user-logout')
 def logout():
-    """ """
+    """Remove user_id from session and redirect to the home page."""
 
-    session.pop['user_id']
+    del session['user_id']
     flash('Goodbye mate!')
     return redirect("/")
 
@@ -159,20 +161,22 @@ def rate_movie():
     user_id = session['user_id']
     movie = Movie.query.filter(Movie.title == title).all()
     movie_id = movie[0].movie_id
-    print "movie_id", movie_id
-    current_rating = Rating.query.filter((Rating.movie_id == movie_id) & (Rating.user_id == user_id)).all()
+    user_rating = Rating.query.filter((Rating.movie_id == movie_id) & (Rating.user_id == user_id)).all()
 
+    print "user_rating", user_rating
 
-    if current_rating == []:
+    if user_rating == []:
         new_rating = Rating(user_id=user_id,
                             movie_id=movie_id,
                             score=rating)
         db.session.add(new_rating)
 
     else:
-        current_rating[0].score = rating
+        user_rating[0].score = rating
 
     db.session.commit()
+
+    return "Your rating was successful!"
 
 
 if __name__ == "__main__":
