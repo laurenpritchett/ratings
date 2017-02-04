@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<h1>Search Results</h1>
+
+<section>
+  <ul>
+    {% for title, movie_id in titles %}
+    <li> <a href="/movies/{{ movie_id }}"> {{ title }} </a></li>
+    {% endfor %}
+  </ul>
+</section>
+
+
+  
+{% endblock %}

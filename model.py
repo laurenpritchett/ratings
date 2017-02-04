@@ -75,6 +75,15 @@ class Rating(db.Model):
         return s % (self.rating_id, self.movie_id, self.user_id, self.score)
 
 
+def progress_tracker(user_id):
+    """Calculate the percentage of movies rate by the user in our database"""
+
+    movie_total = int(Movie.query.count())
+    user_rating_count = int(Rating.query.filter(Rating.user_id == user_id).count())
+
+    return float(user_rating_count)/movie_total*100
+
+
 ##############################################################################
 # Helper functions
 

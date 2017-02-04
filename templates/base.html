@@ -28,6 +28,12 @@
         <li class="active"><a href="/movies">Movies <span class="sr-only">(current)</span></a></li>
         <li><a href="/users">Users</a></li>
       </ul>
+      <form action="/search-results" class="navbar-form navbar-left">
+        <div class="form-group">
+          <input type="text" class="form-control" id="movie-search" name="movie-search" placeholder="Movie Title">
+        </div>
+        <button type="submit" id="movie-search-button" class="btn btn-default">Search for a movie!</button>
+      </form>
       <ul class="nav navbar-nav navbar-right">
         <li>
           {% if 'user_id' in session %}

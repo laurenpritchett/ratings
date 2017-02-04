@@ -6,6 +6,16 @@
 <h2>Zipcode: {{ current_user.zipcode }}</h2>
 
 <section>
+
+  <div class="alert alert-success" role="alert">You've rated {{ "{0:.2f}%".format(progress) }} of the movies in our database!</div>
+
+  <div class="progress">
+    <div class="progress-bar" id="progress" role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%;">
+      {{ "{0:.2f}%".format(progress) }}
+    </div>
+    
+  </div>
+
   <h3>Movie Ratings:</h3>
   <ul>
     {% for title, score in title_and_score %}

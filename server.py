@@ -7,7 +7,7 @@ from flask import (Flask, jsonify, render_template, redirect, request, flash,
 
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import User, Rating, Movie, connect_to_db, db
+from model import User, Rating, Movie, connect_to_db, db, progress_tracker
 
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -94,9 +94,12 @@ def user_page(user_id):
         filter(Rating.user_id == user_id).\
         all()
 
+    progress = progress_tracker(user_id)
+
     return render_template("user-profile.html",
                            current_user=current_user,
                            title_and_score=title_and_score,
+                           progress=progress,
                            )
 
 
@@ -178,6 +181,16 @@ def rate_movie():
 
     return "Your rating was successful!"
 
+@app.route("/search-results")
+def search_movie():
+    """Return results from movie search."""
+
+    title = request.args.get('movie-search')
+    search_title = '%{}%'.format(title)
+    movies = Movie.query.filter(Movie.title.ilike(search_title)).all()
+    titles = sorted([(movie.title, movie.movie_id) for movie in movies])
+
+    return render_template("search-results.html", titles=titles)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
